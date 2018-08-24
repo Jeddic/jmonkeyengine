@@ -119,6 +119,7 @@ public abstract class LwjglWindow extends LwjglContext implements Runnable {
     private GLFWErrorCallback errorCallback;
     private GLFWWindowSizeCallback windowSizeCallback;
     private GLFWWindowFocusCallback windowFocusCallback;
+    private GLFWFramebufferSizeCallbackI framebufferCallback;
 
     private Thread mainThread;
 
@@ -215,6 +216,7 @@ public abstract class LwjglWindow extends LwjglContext implements Runnable {
         glfwWindowHint(GLFW_SAMPLES, settings.getSamples());
         glfwWindowHint(GLFW_STEREO, settings.useStereo3D() ? GLFW_TRUE : GLFW_FALSE);
         glfwWindowHint(GLFW_REFRESH_RATE, settings.getFrequency());
+        glfwWindowHint(GLFW_DECORATED, settings.isBorderless() ? GLFW_FALSE : GLFW_TRUE);
 
         if (settings.getBitsPerPixel() == 24) {
             glfwWindowHint(GLFW_RED_BITS, 8);
@@ -246,13 +248,40 @@ public abstract class LwjglWindow extends LwjglContext implements Runnable {
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
+        
+        // Set initial dpi
+        int[] width = new int[1];
+        int[] height = new int[1];
+
+        glfwGetFramebufferSize(window, width, height);
+
+        float ratio = (float)width[0] / settings.getWidth();
+        settings.setDPIScale(ratio);
 
         // Add a resize callback which delegates to the listener
         glfwSetWindowSizeCallback(window, windowSizeCallback = new GLFWWindowSizeCallback() {
             @Override
             public void invoke(final long window, final int width, final int height) {
                 settings.setResolution(width, height);
+                
+                int[] w = new int[1];
+                int[] h = new int[1];
+                
+                glfwGetFramebufferSize(window, w, h);
+                
+                float ratio = (float)w[0] / width;
+                settings.setDPIScale(ratio);
+                
                 listener.reshape(width, height);
+            }
+        });
+        
+        glfwSetFramebufferSizeCallback(window, framebufferCallback = new GLFWFramebufferSizeCallbackI() {
+            @Override
+            public void invoke(long window, int width, int height) {
+                int w = settings.getWidth();
+                float ratio = (float)w / width;
+                settings.setDPIScale(ratio);
             }
         });
 

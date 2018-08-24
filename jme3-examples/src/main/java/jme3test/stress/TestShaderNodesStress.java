@@ -101,5 +101,9 @@ public class TestShaderNodesStress extends SimpleApplication {
 
         }
 
+        @Override
+        public void appSubStep(String... additionalInfo) {
+        }
+
     }
 }

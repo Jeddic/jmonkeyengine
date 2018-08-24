@@ -132,6 +132,8 @@ public class GlfwMouseInput implements MouseInput {
     private int mouseWheel;
     private int currentWidth;
     private int currentHeight;
+    private int framebufferWidth;
+    private int framebufferHeight;
 
     private boolean cursorVisible;
     private boolean initialized;
@@ -142,11 +144,11 @@ public class GlfwMouseInput implements MouseInput {
     }
 
     private void onCursorPos(final long window, final double xpos, final double ypos) {
-
+        float scale = (float)framebufferHeight / currentHeight;
         int xDelta;
         int yDelta;
-        int x = (int) Math.round(xpos);
-        int y = currentHeight - (int) Math.round(ypos);
+        int x = (int) Math.round(xpos * scale);
+        int y = (int)scale * (currentHeight - (int) Math.round(ypos));
 
         if (mouseX == 0) {
             mouseX = x;
@@ -196,6 +198,13 @@ public class GlfwMouseInput implements MouseInput {
 
             currentWidth = width.get();
             currentHeight = height.get();
+            
+            width.rewind();
+            height.rewind();
+            glfwGetFramebufferSize(window, width, height);
+            
+            framebufferWidth = width.get();
+            framebufferHeight = height.get();
         }
 
         glfwSetCursorPosCallback(window, cursorPosCallback = new GLFWCursorPosCallback() {
@@ -225,6 +234,15 @@ public class GlfwMouseInput implements MouseInput {
                 currentHeight = height;
                 currentWidth = width;
             }
+        });
+        
+        glfwSetFramebufferSizeCallback(window, new GLFWFramebufferSizeCallbackI() {
+            @Override
+            public void invoke(final long window, final int width, final int height) {
+                framebufferWidth = width;
+                framebufferHeight = height;
+            }
+
         });
 
         setCursorVisible(cursorVisible);

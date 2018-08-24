@@ -77,7 +77,7 @@ import com.jme3.renderer.queue.RenderQueue;
  *  Start the Android systrace utility and run the application to
  *  see the detailed timings of the application.
  *
- * @author iwgeric
+ * @author iwgericß
  */
 public class DefaultAndroidProfiler implements AppProfiler {
     private int androidApiLevel = Build.VERSION.SDK_INT;
@@ -168,5 +168,9 @@ public class DefaultAndroidProfiler implements AppProfiler {
     public void spStep(SpStep step, String... additionalInfo) {
 
     }
+
+  @Override
+  public void appSubStep(String... additionalInfo) {
+  }
 
 }

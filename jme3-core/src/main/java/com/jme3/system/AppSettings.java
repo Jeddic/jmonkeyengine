@@ -232,6 +232,8 @@ public final class AppSettings extends HashMap<String, Object> {
         defaults.put("GammaCorrection", false);
         defaults.put("Resizable", false);
         defaults.put("SwapBuffers", true);
+        defaults.put("DPIScale", 1.0f);
+        defaults.put("Borderless", false);
         defaults.put("OpenCL", false);
         defaults.put("OpenCLPlatformChooser", DefaultPlatformChooser.class.getName());
         //  defaults.put("Icons", null);
@@ -867,6 +869,27 @@ public final class AppSettings extends HashMap<String, Object> {
     public void setGammaCorrection(boolean gammaCorrection) {
         putBoolean("GammaCorrection", gammaCorrection);
     }
+    
+    /**
+     * Enables Borderless Window
+     * Adds the ability for certain rendering windows to be shown
+     * without borders
+     * @param borderless 
+     * (Default : false)
+     */
+    public void setBorderless(boolean borderless) {
+        putBoolean("Borderless", borderless);
+    }
+    
+    /**
+     * Set DPI Scale
+     * Sets the expected DPI scale. Usually this should not be set by users
+     * and should be set by the application callbacks.
+     * @param scale - the ratio between the framebuffer size and window size
+     */
+    public void setDPIScale(float scale) {
+        putFloat("DPIScale", scale);
+    }
 
     /**
      * Get the framerate.
@@ -1092,6 +1115,23 @@ public final class AppSettings extends HashMap<String, Object> {
      */
     public boolean isSwapBuffers() {
         return getBoolean("SwapBuffers");
+    }
+    
+    /**
+     * Determines if the display window will be shown with or without borders.
+     * @return  True if borderless mode is enabled
+     */
+    public boolean isBorderless() {
+      return getBoolean("Borderless");
+    }
+    
+    /**
+     * Get Dpi Scale
+     * Returns the ratio between the framebuffer size and the window size.
+     * @return 
+     */
+    public float getDPIScale() {
+      return getFloat("DPIScale");
     }
 
     /**
