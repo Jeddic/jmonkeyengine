@@ -242,7 +242,7 @@ public class InputSystemJme implements InputSystem, RawInputListener {
 
         KeyboardInputEvent keyEvt = new KeyboardInputEvent(code,
                 evt.getKeyChar(),
-                evt.isPressed(),
+                evt.isPressed() || evt.isRepeating(),
                 shiftDown,
                 ctrlDown);
 
